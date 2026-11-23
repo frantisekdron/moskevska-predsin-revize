@@ -8,7 +8,7 @@ const stateNames = { new: 'Přijato', done: 'Hotovo', question: 'K upřesnění'
 const draftKey = 'moskevska-predsin-draft-2';
 let mediaKey, token, manifest, active, version, pendingId;
 let draftPoints = [], highlighted = null, selecting = false, loading = false, sending = false;
-let records = [], notesReady = false, notesRequest = 0, refreshing = false;
+let records = [], notesReady = false, notesError = false, notesRequest = 0, refreshing = false;
 let drafts = {};
 
 const latest = entry => entry.versions.at(-1)?.revision ?? 0;
@@ -250,7 +250,7 @@ function showRecords() {
     el('notes').replaceChildren(...notes.map(row));
   } else {
     const blank = document.createElement('p');
-    blank.textContent = notesReady ? 'Zatím tu žádné nejsou.' : 'Přehled se nepodařilo načíst.';
+    blank.textContent = notesReady ? 'Zatím tu žádné nejsou.' : notesError ? 'Přehled se nepodařilo načíst.' : 'Načítám…';
     el('notes').replaceChildren(blank);
   }
   let total = 0;
@@ -263,7 +263,7 @@ function showRecords() {
   }
   el('progress').hidden = !notesReady;
   el('progress').textContent = total + ' z ' + manifest.photos.length + ' schváleno';
-  el('retry').hidden = notesReady;
+  el('retry').hidden = !notesError;
   updatePointLabels();
   syncControls();
 }
@@ -275,9 +275,11 @@ async function loadNotes() {
     if (request !== notesRequest) return;
     records = data.notes.map(note => ({ ...note, photo: note.photo || manifest.defaultPhoto }));
     notesReady = true;
+    notesError = false;
   } catch {
     if (request !== notesRequest) return;
     notesReady = false;
+    notesError = true;
   }
   showRecords();
 }
