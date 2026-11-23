@@ -1,9 +1,271 @@
 {
-  "before": "pred.bin",
-  "versions": [
+  "defaultPhoto": "P1194521",
+  "photos": [
     {
-      "revision": 1,
-      "image": "po-1.bin"
+      "id": "P1194396",
+      "title": "Pokoj s modrou pohovkou",
+      "before": "P1194396-pred.bin",
+      "thumbnail": "P1194396-nahled.bin",
+      "versions": [
+        {
+          "revision": 1,
+          "image": "P1194396-po-1.bin"
+        }
+      ]
+    },
+    {
+      "id": "P1194401",
+      "title": "Pokoj s modrou pohovkou",
+      "before": "P1194401-pred.bin",
+      "thumbnail": "P1194401-nahled.bin",
+      "versions": [
+        {
+          "revision": 1,
+          "image": "P1194401-po-1.bin"
+        }
+      ]
+    },
+    {
+      "id": "P1194411",
+      "title": "Balkon",
+      "before": "P1194411-pred.bin",
+      "thumbnail": "P1194411-nahled.bin",
+      "versions": [
+        {
+          "revision": 1,
+          "image": "P1194411-po-1.bin"
+        }
+      ]
+    },
+    {
+      "id": "P1194416",
+      "title": "Balkon",
+      "before": "P1194416-pred.bin",
+      "thumbnail": "P1194416-nahled.bin",
+      "versions": [
+        {
+          "revision": 1,
+          "image": "P1194416-po-1.bin"
+        }
+      ]
+    },
+    {
+      "id": "P1194421",
+      "title": "Pokoj s modrou pohovkou",
+      "before": "P1194421-pred.bin",
+      "thumbnail": "P1194421-nahled.bin",
+      "versions": [
+        {
+          "revision": 1,
+          "image": "P1194421-po-1.bin"
+        }
+      ]
+    },
+    {
+      "id": "P1194431",
+      "title": "Pokoj se spacím patrem",
+      "before": "P1194431-pred.bin",
+      "thumbnail": "P1194431-nahled.bin",
+      "versions": [
+        {
+          "revision": 1,
+          "image": "P1194431-po-1.bin"
+        }
+      ]
+    },
+    {
+      "id": "P1194441",
+      "title": "Pokoj se spacím patrem",
+      "before": "P1194441-pred.bin",
+      "thumbnail": "P1194441-nahled.bin",
+      "versions": [
+        {
+          "revision": 1,
+          "image": "P1194441-po-1.bin"
+        }
+      ]
+    },
+    {
+      "id": "P1194446",
+      "title": "Pokoj se spacím patrem",
+      "before": "P1194446-pred.bin",
+      "thumbnail": "P1194446-nahled.bin",
+      "versions": [
+        {
+          "revision": 1,
+          "image": "P1194446-po-1.bin"
+        }
+      ]
+    },
+    {
+      "id": "P1194451",
+      "title": "Pokoj se spacím patrem",
+      "before": "P1194451-pred.bin",
+      "thumbnail": "P1194451-nahled.bin",
+      "versions": [
+        {
+          "revision": 1,
+          "image": "P1194451-po-1.bin"
+        }
+      ]
+    },
+    {
+      "id": "P1194466",
+      "title": "Pokoj se spacím patrem",
+      "before": "P1194466-pred.bin",
+      "thumbnail": "P1194466-nahled.bin",
+      "versions": [
+        {
+          "revision": 1,
+          "image": "P1194466-po-1.bin"
+        }
+      ]
+    },
+    {
+      "id": "P1194472",
+      "title": "Koupelna",
+      "before": "P1194472-pred.bin",
+      "thumbnail": "P1194472-nahled.bin",
+      "versions": [
+        {
+          "revision": 1,
+          "image": "P1194472-po-1.bin"
+        }
+      ]
+    },
+    {
+      "id": "P1194476",
+      "title": "Koupelna",
+      "before": "P1194476-pred.bin",
+      "thumbnail": "P1194476-nahled.bin",
+      "versions": [
+        {
+          "revision": 1,
+          "image": "P1194476-po-1.bin"
+        }
+      ]
+    },
+    {
+      "id": "P1194481",
+      "title": "Samostatné WC",
+      "before": "P1194481-pred.bin",
+      "thumbnail": "P1194481-nahled.bin",
+      "versions": [
+        {
+          "revision": 1,
+          "image": "P1194481-po-1.bin"
+        }
+      ]
+    },
+    {
+      "id": "P1194490",
+      "title": "Kuchyně",
+      "before": "P1194490-pred.bin",
+      "thumbnail": "P1194490-nahled.bin",
+      "versions": [
+        {
+          "revision": 1,
+          "image": "P1194490-po-1.bin"
+        }
+      ]
+    },
+    {
+      "id": "P1194497",
+      "title": "Kuchyně",
+      "before": "P1194497-pred.bin",
+      "thumbnail": "P1194497-nahled.bin",
+      "versions": [
+        {
+          "revision": 1,
+          "image": "P1194497-po-1.bin"
+        }
+      ]
+    },
+    {
+      "id": "P1194503",
+      "title": "Kuchyně",
+      "before": "P1194503-pred.bin",
+      "thumbnail": "P1194503-nahled.bin",
+      "versions": [
+        {
+          "revision": 1,
+          "image": "P1194503-po-1.bin"
+        }
+      ]
+    },
+    {
+      "id": "P1194506",
+      "title": "Kuchyně",
+      "before": "P1194506-pred.bin",
+      "thumbnail": "P1194506-nahled.bin",
+      "versions": [
+        {
+          "revision": 1,
+          "image": "P1194506-po-1.bin"
+        }
+      ]
+    },
+    {
+      "id": "P1194513",
+      "title": "Výhled do dvora",
+      "before": "P1194513-pred.bin",
+      "thumbnail": "P1194513-nahled.bin",
+      "versions": []
+    },
+    {
+      "id": "P1194520",
+      "title": "Kuchyně",
+      "before": "P1194520-pred.bin",
+      "thumbnail": "P1194520-nahled.bin",
+      "versions": [
+        {
+          "revision": 1,
+          "image": "P1194520-po-1.bin"
+        }
+      ]
+    },
+    {
+      "id": "P1194521",
+      "title": "Předsíň",
+      "before": "pred.bin",
+      "thumbnail": "P1194521-nahled.bin",
+      "versions": [
+        {
+          "revision": 1,
+          "image": "po-1.bin"
+        }
+      ]
+    },
+    {
+      "id": "P1194526",
+      "title": "Předsíň",
+      "before": "P1194526-pred.bin",
+      "thumbnail": "P1194526-nahled.bin",
+      "versions": []
+    },
+    {
+      "id": "P1194536",
+      "title": "Předsíň",
+      "before": "P1194536-pred.bin",
+      "thumbnail": "P1194536-nahled.bin",
+      "versions": [
+        {
+          "revision": 1,
+          "image": "P1194536-po-1.bin"
+        }
+      ]
+    },
+    {
+      "id": "P1194546",
+      "title": "Předsíň",
+      "before": "P1194546-pred.bin",
+      "thumbnail": "P1194546-nahled.bin",
+      "versions": [
+        {
+          "revision": 1,
+          "image": "P1194546-po-1.bin"
+        }
+      ]
     }
   ]
 }

@@ -11,3 +11,19 @@ aside{border-top:2px solid var(--green);padding-top:16px}h2{font-size:1.37rem;le
 [hidden]{display:none!important}main{padding-bottom:32px}
 @media(max-width:860px){.layout{grid-template-columns:1fr;gap:6px}.mast-inner{min-height:52px}.title-row{margin-top:23px}.history{margin-top:20px}aside{padding-top:15px}.point-row{min-height:45px}}
 @media(max-width:450px){.download{font-size:.74rem}.handle{width:38px;height:38px}.caption{font-size:.72rem}.tag{top:8px}.left{left:8px}.right{right:8px}.title-row{gap:8px;margin-bottom:16px}}
+.review-progress{margin:0 0 5px;color:var(--green);font-size:.87rem;font-weight:650;white-space:nowrap}
+.gallery-nav{border-block:1px solid var(--rule);margin-bottom:18px}
+.thumbnails{display:flex;gap:8px;overflow-x:auto;scrollbar-width:thin;padding:12px 3px;scroll-padding-inline:6px}
+.thumb{flex:0 0 clamp(77px,8vw,106px);padding:3px;background:none;border:1px solid transparent;border-radius:5px;text-align:left;color:var(--muted);position:relative;min-width:0}
+.thumb img{display:block;width:100%;aspect-ratio:3/2;object-fit:cover;background:#e0e4de;border-radius:3px}
+.thumb span{display:block;font-size:.69rem;line-height:1.15;padding:5px 2px 1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.thumb .approved-mark{position:absolute;right:7px;top:7px;border-radius:4px;background:#235843;color:#fff;font-size:.67rem;padding:3px 5px;font-weight:700}
+.thumb[aria-current=true]{border-color:var(--green);background:#e7eee7;color:var(--ink);font-weight:650}
+.thumb:focus-visible{outline-offset:-2px}
+.photo-heading{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;margin-bottom:10px}
+.photo-heading h2{margin:0 0 3px}.photo-heading p{margin:0;color:var(--muted);font-size:.77rem}
+.photo-arrows{display:flex;gap:5px}.photo-arrows button{background:transparent;color:var(--green);border:1px solid var(--rule);border-radius:4px;font-size:1.35rem;line-height:1;width:37px;height:33px}.photo-arrows button:disabled{opacity:.4}
+.figure[aria-busy=true]{opacity:.75}.caption .download{margin-left:auto;font-size:inherit;padding:2px 0}
+.approval{margin-bottom:20px}.approve{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;border:1px solid var(--green);border-radius:5px;padding:10px 14px;background:#e7eee7;color:#214d3e;font-weight:700;font-size:.91rem}.approve:not(:disabled):hover{background:#d9e8dd}.approve[aria-pressed=true]{background:#285b49;color:#fff}
+.approval .text-action{margin-top:3px}.approval .text-action:disabled{opacity:.6}.note .approved{color:var(--green);font-weight:700}
+@media(max-width:450px){.title-row{align-items:flex-start;flex-direction:column;gap:5px}.review-progress{margin:0}.gallery-nav{margin-bottom:13px}.thumbnails{padding-block:8px}.caption{flex-wrap:wrap}}
