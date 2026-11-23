@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="referrer" content="no-referrer">
+  <title>Moskevská · Předsíň</title>
+  <link rel="stylesheet" href="galerie.css">
+  <script type="module" src="predsin.js"></script>
+  <style>
+    main { width:min(860px, calc(100% - 32px)); margin:24px auto; display:grid; gap:16px; }
+    h1, p { margin:0; }
+    .primary { width:max-content; min-height:46px; gap:12px; text-decoration:none; }
+    img { width:100%; height:auto; display:block; border-radius:6px; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Předsíň · Moskevská</h1>
+    <p id="state" role="status">Načítám fotografii…</p>
+    <a id="file" class="primary" hidden>Stáhnout JPG <span aria-hidden="true">↓</span></a>
+    <img id="preview" alt="Upravená fotografie předsíně v Moskevské" hidden>
+  </main>
+</body>
+</html>
