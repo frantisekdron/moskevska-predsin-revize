@@ -7,7 +7,7 @@ const thumbnails = new Map();
 const stateNames = { new: 'Přijato', done: 'Hotovo', question: 'K upřesnění', approved: 'Schváleno' };
 const draftKey = 'moskevska-predsin-draft-2';
 let mediaKey, token, manifest, active, version, pendingId;
-let point = null, selecting = false, loading = false, sending = false;
+let draftPoints = [], highlighted = null, selecting = false, loading = false, sending = false;
 let records = [], notesReady = false, notesRequest = 0, refreshing = false;
 let drafts = {};
 
@@ -76,35 +76,107 @@ function saveDraft() {
   if (!active) return;
   const text = el('text').value;
   const key = slideKey(active.id, version);
-  if (text || point) drafts[key] = { text, point, id: pendingId };
+  if (text || draftPoints.length) drafts[key] = { text, points: draftPoints, id: pendingId };
   else delete drafts[key];
   try { localStorage.setItem(draftKey, JSON.stringify(drafts)); } catch {}
 }
 
-function drawPoint(value) {
-  el('marker').hidden = !value;
-  if (value) {
-    el('marker').style.left = value.x / 10 + '%';
-    el('marker').style.top = value.y / 10 + '%';
+function numberedPoints(revision = version) {
+  return records.filter(note => note.photo === active.id && note.revision === revision && note.point)
+    .sort((a, b) => a.created.localeCompare(b.created) || a.id.localeCompare(b.id));
+}
+
+function drawPoints() {
+  const saved = numberedPoints();
+  const points = [...saved, ...draftPoints];
+  el('markers').replaceChildren(...points.map((entry, index) => {
+    const marker = document.createElement('span');
+    marker.className = 'marker';
+    marker.classList.toggle('saved', index < saved.length);
+    marker.classList.toggle('selected', entry.id === highlighted);
+    marker.style.left = entry.point.x / 10 + '%';
+    marker.style.top = entry.point.y / 10 + '%';
+    marker.textContent = index + 1;
+    return marker;
+  }));
+}
+
+function updatePointLabels() {
+  const offset = numberedPoints().length;
+  for (const [index, badge] of Array.from(el('point-drafts').querySelectorAll('.point-badge')).entries()) {
+    badge.textContent = offset + index + 1;
+  }
+  el('submit-label').textContent = draftPoints.length + Number(Boolean(el('text').value.trim())) > 1
+    ? 'Odeslat připomínky' : 'Odeslat připomínku';
+  drawPoints();
+}
+
+function renderPointDrafts(focusId) {
+  const fields = draftPoints.map((entry, index) => {
+    const item = document.createElement('section');
+    item.className = 'point-draft';
+    const header = document.createElement('header');
+    const label = document.createElement('label');
+    const badge = document.createElement('span');
+    badge.className = 'point-badge';
+    label.append('Bod ', badge);
+    const field = document.createElement('textarea');
+    field.id = 'point-text-' + index;
+    field.rows = 2;
+    field.maxLength = 1600;
+    field.placeholder = 'Co na tomto místě upravit?';
+    field.value = entry.text;
+    label.htmlFor = field.id;
+    field.addEventListener('focus', () => { highlighted = entry.id; drawPoints(); });
+    field.addEventListener('input', () => {
+      if (entry.attempted) {
+        entry.id = crypto.randomUUID();
+        entry.attempted = false;
+        highlighted = entry.id;
+        drawPoints();
+      }
+      entry.text = field.value;
+      saveDraft();
+    });
+    const remove = document.createElement('button');
+    remove.type = 'button';
+    remove.className = 'remove';
+    remove.textContent = 'Odebrat bod';
+    remove.onclick = () => {
+      draftPoints = draftPoints.filter(draft => draft !== entry);
+      highlighted = null;
+      saveDraft();
+      renderPointDrafts();
+      el('point').focus();
+    };
+    header.append(label, remove);
+    item.append(header, field);
+    return item;
+  });
+  el('point-drafts').replaceChildren(...fields);
+  updatePointLabels();
+  syncControls();
+  if (focusId) {
+    const i = draftPoints.findIndex(entry => entry.id === focusId);
+    el('point-text-' + i)?.focus();
   }
 }
 
 function selectionMode(enabled) {
   selecting = enabled;
   el('point').setAttribute('aria-pressed', String(enabled));
-  el('point-label').textContent = enabled ? 'Klikněte na místo ve fotce' : point ? 'Změnit označené místo' : 'Označit místo ve fotce';
-  el('drop-point').hidden = !point && !enabled;
+  el('point-label').textContent = enabled ? 'Klikněte do fotky · Zrušit' : 'Přidat bod do fotky';
   el('pick').hidden = !enabled;
   el('split').disabled = enabled;
 }
 
-function pick(value) {
-  point = value;
-  pendingId = null;
-  drawPoint(point);
+function pick(point) {
+  const id = crypto.randomUUID();
+  draftPoints.push({ id, point, text: '' });
+  highlighted = id;
   selectionMode(false);
   saveDraft();
-  el('text').focus();
+  renderPointDrafts(id);
 }
 
 el('point').addEventListener('click', () => {
@@ -112,17 +184,16 @@ el('point').addEventListener('click', () => {
   if (selecting) {
     el('figure').scrollIntoView({ block: 'nearest' });
     el('pick').focus({ preventScroll: true });
-  } else drawPoint(point);
+  }
 });
 el('pick').addEventListener('click', event => pick(event.detail ? relative(event) : { x: 500, y: 500 }));
-el('drop-point').addEventListener('click', () => pick(null));
 document.addEventListener('keydown', event => {
   if (event.key === 'Escape' && selecting) {
     selectionMode(false);
     el('point').focus();
   }
 });
-el('text').addEventListener('input', () => { pendingId = null; saveDraft(); });
+el('text').addEventListener('input', () => { pendingId = null; saveDraft(); updatePointLabels(); });
 
 function row(note) {
   const item = document.createElement('article');
@@ -138,10 +209,12 @@ function row(note) {
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'text-action';
-    button.textContent = 'Ukázat místo';
+    const number = numberedPoints(note.revision).findIndex(entry => entry.id === note.id) + 1;
+    button.textContent = 'Ukázat bod ' + number;
     button.onclick = async () => {
       if (await showSlide(active, note.revision)) {
-        drawPoint(note.point);
+        highlighted = note.id;
+        drawPoints();
         el('figure').scrollIntoView({ block: 'nearest' });
       }
     };
@@ -162,7 +235,8 @@ function syncControls() {
   const accepted = approved(active.id, version);
   el('previous').disabled = locked || manifest.photos[0].id === active.id;
   el('next').disabled = locked || manifest.photos.at(-1).id === active.id;
-  for (const id of ['submit', 'text', 'point', 'drop-point', 'versions', 'unapprove']) el(id).disabled = locked;
+  for (const id of ['submit', 'text', 'point', 'versions', 'unapprove']) el(id).disabled = locked;
+  for (const field of el('point-drafts').querySelectorAll('textarea, button')) field.disabled = locked;
   el('approve').disabled = locked || !notesReady || accepted;
   el('approve').setAttribute('aria-pressed', String(accepted));
   el('approve-label').textContent = accepted ? 'OK · Schváleno' : 'OK · Schválit fotku';
@@ -190,6 +264,7 @@ function showRecords() {
   el('progress').hidden = !notesReady;
   el('progress').textContent = total + ' z ' + manifest.photos.length + ' schváleno';
   el('retry').hidden = notesReady;
+  updatePointLabels();
   syncControls();
 }
 
@@ -224,8 +299,8 @@ async function setApproval(accept, fromText = false) {
     if (accept) records.unshift(result.note);
     if (fromText) {
       el('text').value = '';
-      pendingId = point = null;
-      drawPoint(null);
+      pendingId = null;
+      highlighted = null;
       selectionMode(false);
       saveDraft();
     }
@@ -240,27 +315,58 @@ el('unapprove').onclick = () => setApproval(false);
 el('form').addEventListener('submit', async event => {
   event.preventDefault();
   const text = el('text').value.trim();
-  if (!text || loading || sending) return;
-  if (/^ok[.!]?$/i.test(text)) { await setApproval(true, true); return; }
-  pendingId ||= crypto.randomUUID();
-  const body = { action: 'add', id: pendingId, photo: active.id, revision: version, text, point };
-  saveDraft();
+  if (loading || sending) return;
   selectionMode(false);
+  if (!text && !draftPoints.length) {
+    message('Napište připomínku nebo přidejte bod do fotky.', true);
+    return;
+  }
+  const empty = draftPoints.find(entry => !entry.text.trim());
+  if (empty) {
+    const index = draftPoints.indexOf(empty);
+    message('K bodu ' + (numberedPoints().length + index + 1) + ' doplňte připomínku nebo ho odeberte.', true);
+    el('point-text-' + index).focus();
+    return;
+  }
+  const confirm = /^ok[.!]?$/i.test(text);
+  if (confirm && !draftPoints.length) { await setApproval(true, true); return; }
+  if (confirm) {
+    message('OK schvaluje celou fotku. Nejdřív odešlete připomínky k bodům.', true);
+    el('text').focus();
+    return;
+  }
+  if (text) pendingId ||= crypto.randomUUID();
+  const entries = draftPoints.map(entry => ({ ...entry, text: entry.text.trim() }));
+  if (text) entries.push({ id: pendingId, text, point: null });
   sending = true;
   syncControls();
   message('Odesílám…');
-  try {
-    const result = await notesAPI(body);
-    if (result.note?.id !== body.id || result.note.photo !== body.photo) throw Error('Chybí potvrzení.');
-    el('text').value = '';
-    point = pendingId = null;
-    drawPoint(null);
-    selectionMode(false);
+  let accepted = 0;
+  for (const entry of entries) {
+    const draft = draftPoints.find(draft => draft.id === entry.id);
+    if (draft) draft.attempted = true;
     saveDraft();
-    message('Připomínka byla přijata ke zpracování.');
-    await loadNotes();
-  } catch { message('Přijetí se nepodařilo potvrdit. Text tu zůstává, zkuste jej odeslat znovu.', true); }
-  finally { sending = false; syncControls(); }
+    try {
+      const body = { action: 'add', id: entry.id, photo: active.id, revision: version, text: entry.text, point: entry.point };
+      const result = await notesAPI(body);
+      if (result.note?.id !== body.id || result.note.photo !== body.photo) throw Error('Chybí potvrzení.');
+      records = [result.note, ...records.filter(note => note.id !== entry.id)];
+      if (draft) draftPoints = draftPoints.filter(item => item !== draft);
+      else { el('text').value = ''; pendingId = null; }
+      accepted++;
+      saveDraft();
+    } catch {}
+  }
+  highlighted = null;
+  sending = false;
+  renderPointDrafts();
+  showRecords();
+  if (accepted === entries.length) {
+    message(accepted === 1 ? 'Připomínka byla přijata ke zpracování.' : 'Všechny připomínky byly přijaty ke zpracování.');
+  } else {
+    message('Potvrzeno ' + accepted + ' z ' + entries.length + '. Zbývající připomínky jsou tu k opakovanému odeslání.', true);
+  }
+  await loadNotes();
 });
 
 function buildThumbnails() {
@@ -333,8 +439,12 @@ async function showSlide(selection, number) {
     version = number;
     const draft = drafts[slideKey(active.id, version)];
     el('text').value = draft?.text || '';
-    point = draft?.point ?? null;
-    pendingId = draft?.id || null;
+    draftPoints = draft?.points || (draft?.point ? [{
+      id: draft.id || crypto.randomUUID(), text: draft.text || '', point: draft.point
+    }] : []);
+    if (draft?.point && !draft?.points) el('text').value = '';
+    pendingId = draft?.point && !draft?.points ? null : draft?.id || null;
+    highlighted = null;
     el('before').src = before;
     el('before').alt = active.title + ' · před úpravou';
     el('before').hidden = !afterFile;
@@ -348,11 +458,11 @@ async function showSlide(selection, number) {
     el('download').hidden = false;
     el('access').hidden = true;
     el('gallery-nav').hidden = el('workspace').hidden = false;
-    drawPoint(point);
     selectionMode(false);
     split(33);
     markActive();
     setVersions();
+    renderPointDrafts();
     message('');
     showRecords();
     return true;
@@ -391,7 +501,7 @@ async function refresh() {
     if (loading || sending) return;
     const entry = nextManifest.photos.find(photo => photo.id === active.id);
     if (entry && latest(entry) > latest(active)) {
-      const autoOpen = version === latest(active) && !el('text').value.trim() && !point;
+      const autoOpen = version === latest(active) && !el('text').value.trim() && !draftPoints.length;
       manifest = nextManifest;
       active = entry;
       setVersions();

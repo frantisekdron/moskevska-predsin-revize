@@ -7,8 +7,8 @@
   <meta name="referrer" content="no-referrer">
   <meta name="theme-color" content="#f7f6f2">
   <title>Moskevská · Fotografie bytu</title>
-  <link rel="stylesheet" href="galerie.css?v=2">
-  <script src="galerie.js?v=2" type="module"></script>
+  <link rel="stylesheet" href="galerie.css?v=3">
+  <script src="galerie.js?v=3" type="module"></script>
 </head>
 <body>
   <header class="mast"><div class="wrap mast-inner"><span class="studio"><i aria-hidden="true"></i> FD Studio</span><span>Kontrola fotografií</span></div></header>
@@ -28,7 +28,7 @@
           <div class="divider" id="divider" aria-hidden="true"><span class="handle"><i></i><i></i></span></div>
           <input type="range" id="split" min="0" max="100" value="50" aria-label="Podíl původní fotografie" aria-describedby="compare-help">
           <button type="button" id="pick" hidden aria-label="Vybrat bod na fotografii"></button>
-          <span class="marker" id="marker" hidden aria-hidden="true"></span>
+          <div id="markers" class="markers" aria-hidden="true"></div>
         </div>
         <div class="caption"><p id="compare-help"></p><label id="version-box"><span id="version"></span><select id="versions" aria-label="Zobrazit verzi" hidden></select></label><a id="download" class="download" hidden>Stáhnout JPG <span aria-hidden="true">↓</span></a></div>
       </section>
@@ -36,10 +36,11 @@
         <h2>Schválení a připomínky</h2>
         <div class="approval"><button type="button" id="approve" class="approve" disabled><span id="approve-label">OK · Schválit fotku</span><span aria-hidden="true">✓</span></button><button type="button" id="unapprove" class="text-action" hidden>Zrušit schválení</button></div>
         <form id="form">
-          <label for="text">Co chcete upravit?</label>
-          <textarea id="text" rows="4" maxlength="1600" required placeholder="Popište požadovanou úpravu…"></textarea>
-          <div class="point-row"><button class="text-action" type="button" id="point"><span aria-hidden="true">⌖</span> <span id="point-label">Označit místo ve fotce</span></button><button id="drop-point" type="button" class="remove" hidden>Zrušit</button></div>
-          <button type="submit" class="primary" id="submit">Odeslat připomínku <span aria-hidden="true">↗</span></button>
+          <div class="point-row"><button class="text-action" type="button" id="point"><span aria-hidden="true">⌖</span> <span id="point-label">Přidat bod do fotky</span></button></div>
+          <div id="point-drafts" class="point-drafts"></div>
+          <label for="text">Připomínka k celé fotce</label>
+          <textarea id="text" rows="3" maxlength="1600" placeholder="Pokud se úprava týká celého snímku…"></textarea>
+          <button type="submit" class="primary" id="submit"><span id="submit-label">Odeslat připomínku</span><span aria-hidden="true">↗</span></button>
           <p class="feedback" id="notice" role="status" aria-live="polite"></p>
         </form>
         <div class="history"><h3>Historie této fotky</h3><div id="notes"><p>Načítám…</p></div><button type="button" class="text-action" id="retry" hidden>Načíst znovu</button></div>
