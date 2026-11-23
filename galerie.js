@@ -132,6 +132,31 @@ async function loadNotes() {
 }
 el('retry').addEventListener('click', loadNotes);
 
+function setVersions() {
+  const options = manifest.versions.map(v => new Option('Verze ' + v.revision, String(v.revision)));
+  el('versions').replaceChildren(...options);
+  el('versions').hidden = options.length === 1;
+  el('version').hidden = options.length > 1;
+  if (version) el('versions').value = String(version);
+}
+let checking = false;
+async function refresh() {
+  if (checking || document.hidden) return;
+  checking = true;
+  try {
+    const response = await fetch('revize.json?t=' + Date.now(), { cache: 'no-store' });
+    if (response.ok) {
+      const next = await response.json();
+      const previousLatest = manifest.versions.at(-1).revision;
+      const latest = next.versions.at(-1).revision;
+      if (latest > previousLatest) {
+        manifest = next; setVersions();
+        if (version === previousLatest && !el('text').value.trim() && !point && !el('submit').disabled) await showVersion(latest);
+      }
+    }
+  } catch {} finally { await loadNotes(); checking = false; }
+}
+
 el('form').addEventListener('submit', async event => {
   event.preventDefault();
   const text = el('text').value.trim();
@@ -139,7 +164,7 @@ el('form').addEventListener('submit', async event => {
   pendingId ||= crypto.randomUUID();
   const body = { action: 'add', id: pendingId, revision: version, text, point };
   saveDraft(); selectionMode(false);
-  el('submit').disabled = el('text').disabled = el('point').disabled = el('versions').disabled = true;
+  el('submit').disabled = el('text').disabled = el('point').disabled = el('drop-point').disabled = el('versions').disabled = true;
   message('Odesílám…');
   try {
     const result = await notesAPI(body);
@@ -149,7 +174,7 @@ el('form').addEventListener('submit', async event => {
     message('Připomínka byla přijata ke zpracování.');
     await loadNotes();
   } catch { message('Přijetí se nepodařilo potvrdit. Text tu zůstává, zkuste jej odeslat znovu.', true); }
-  finally { el('submit').disabled = el('text').disabled = el('point').disabled = el('versions').disabled = false; }
+  finally { el('submit').disabled = el('text').disabled = el('point').disabled = el('drop-point').disabled = el('versions').disabled = false; }
 });
 
 async function showVersion(number) {
@@ -182,14 +207,15 @@ async function start() {
     try { draft = JSON.parse(localStorage.getItem(storeName)); } catch {}
     const all = manifest.versions.map(v => v.revision);
     const initial = draft?.text?.trim() && all.includes(draft.version) ? draft.version : all.at(-1);
-    for (const n of all) el('versions').add(new Option('Verze ' + n, String(n)));
-    el('versions').hidden = all.length === 1; el('version').hidden = all.length > 1;
+    setVersions();
     await showVersion(initial);
     if (draft?.text) { el('text').value = draft.text; point = draft.point || null; pendingId = draft.id || null; }
     drawPoint(point); selectionMode(false); split(33);
     el('access').hidden = true; el('workspace').hidden = false;
     await loadNotes();
-    window.addEventListener('focus', loadNotes);
+    window.addEventListener('focus', refresh);
+    document.addEventListener('visibilitychange', refresh);
+    setInterval(refresh, 60000);
   } catch { el('access').textContent = 'Porovnání se nepodařilo otevřít. Zkontrolujte celý odkaz a zkuste stránku znovu načíst.'; }
 }
 start();
