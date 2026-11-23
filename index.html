@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="referrer" content="no-referrer">
+  <meta name="theme-color" content="#f7f6f2">
+  <title>Moskevská · Předsíň před a po úpravě</title>
+  <link rel="stylesheet" href="galerie.css">
+  <script src="galerie.js" type="module"></script>
+</head>
+<body>
+  <header class="mast"><div class="wrap mast-inner"><span class="studio"><i aria-hidden="true"></i> FD Studio</span><span>Kontrola fotografií</span></div></header>
+  <main class="wrap">
+    <div class="title-row"><div><p class="location">Moskevská</p><h1>Předsíň</h1></div><a id="download" class="download" hidden>Stáhnout upravenou fotku <span aria-hidden="true">↓</span></a></div>
+    <p id="access" role="status">Načítám porovnání…</p>
+    <div class="layout" id="workspace" hidden>
+      <section class="comparison" aria-label="Porovnání fotografie">
+        <div class="figure" id="figure">
+          <img id="after" alt="Předsíň po úklidu" draggable="false">
+          <img id="before" alt="Předsíň před úklidem" draggable="false">
+          <span class="tag left" id="leftTag">Před</span><span class="tag right" id="rightTag">Po</span>
+          <div class="divider" aria-hidden="true"><span class="handle"><i></i><i></i></span></div>
+          <input type="range" id="split" min="0" max="100" value="50" aria-label="Podíl původní fotografie" aria-describedby="compare-help">
+          <button type="button" id="pick" hidden aria-label="Vybrat bod na fotografii"></button>
+          <span class="marker" id="marker" hidden aria-hidden="true"></span>
+        </div>
+        <div class="caption"><p id="compare-help">Posunutím dělicí čáry porovnáte oba snímky.</p><label id="version-box"><span id="version">Verze 1</span><select id="versions" aria-label="Zobrazit verzi" hidden></select></label></div>
+      </section>
+      <aside>
+        <h2>Připomínky</h2>
+        <form id="form">
+          <label for="text">Co chcete upravit?</label>
+          <textarea id="text" rows="4" maxlength="1600" required placeholder="Popište požadovanou úpravu…"></textarea>
+          <div class="point-row"><button class="text-action" type="button" id="point"><span aria-hidden="true">⌖</span> <span id="point-label">Označit místo ve fotce</span></button><button id="drop-point" type="button" class="remove" hidden>Zrušit</button></div>
+          <button type="submit" class="primary" id="submit">Odeslat připomínku <span aria-hidden="true">↗</span></button>
+          <p class="feedback" id="notice" role="status" aria-live="polite"></p>
+        </form>
+        <div class="history"><h3>Odeslané připomínky</h3><div id="notes" aria-live="off"><p>Načítám…</p></div><button type="button" class="text-action" id="retry" hidden>Načíst znovu</button></div>
+      </aside>
+    </div>
+  </main>
+</body></html>
