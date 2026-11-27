@@ -264,6 +264,10 @@
         {
           "revision": 1,
           "image": "P1194546-po-1.bin"
+        },
+        {
+          "revision": 2,
+          "image": "P1194546-po-2.bin"
         }
       ]
     }

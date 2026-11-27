@@ -1,6 +1,8 @@
 const state = document.getElementById('state');
-const id = 'P1194521';
+const reverse = new URLSearchParams(location.search).get('foto') === 'P1194546';
+const id = reverse ? 'P1194546' : 'P1194521';
 const secret = new URLSearchParams(location.hash.slice(1)).get('k') || '';
+if (reverse) document.getElementById('title').textContent = 'Předsíň z druhé strany · Moskevská';
 
 async function load() {
   if (!/^[A-Za-z0-9_-]{43}$/.test(secret)) {
@@ -25,7 +27,7 @@ async function load() {
     const file = document.getElementById('file');
     const preview = document.getElementById('preview');
     file.href = preview.src = url;
-    file.download = 'Moskevska-upravena-predsin.jpg';
+    file.download = reverse ? 'Moskevska-predsin-opacny-pohled.jpg' : 'Moskevska-upravena-predsin.jpg';
     state.hidden = true;
     file.hidden = preview.hidden = false;
   } catch {
